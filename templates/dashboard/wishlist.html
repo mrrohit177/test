@@ -1,0 +1,25 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Wishlist{% endblock %}
+{% block sidebar %}{% include "dashboard/buyer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/buyer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<h1>❤️ Wishlist</h1>
+{% if items %}
+<div class="grid grid-products">
+  {% for w in items %}
+  <article class="card">
+    <a href="/products/{{ w.product_id }}" class="card-img">{% if w.image_path %}<img src="{{ MEDIA_URL }}{{ w.image_path }}">{% else %}<div class="placeholder">🌾</div>{% endif %}</a>
+    <div class="card-body">
+      <h3 class="card-title"><a href="/products/{{ w.product_id }}">{{ w.name }}</a></h3>
+      <div class="card-price">₹{{ w.price | money }} <small>/ {{ w.unit }}</small></div>
+      <div class="card-meta"><span>👨‍🌾 {{ w.farmer_name }}</span></div>
+      <div class="card-actions">
+        <a href="/products/{{ w.product_id }}" class="btn btn-sm btn-primary">View</a>
+        <form method="post" action="/buyer/wishlist"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="remove"><input type="hidden" name="product_id" value="{{ w.product_id }}"><input type="hidden" name="next" value="/buyer/wishlist"><button class="btn btn-sm btn-ghost" style="color:var(--danger)">Remove</button></form>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}<div class="empty-state"><div class="emoji">🤍</div><h3>Your wishlist is empty</h3><p><a href="/products">Browse products</a> and save your favourites.</p></div>{% endif %}
+{% endblock %}

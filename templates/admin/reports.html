@@ -1,0 +1,18 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Reports{% endblock %}
+{% block dash_content %}
+<div class="flex between items-center wrap"><h1>📈 Reports</h1><a href="/admin/reports?export=orders" class="btn btn-outline">⬇ Export Orders CSV</a></div>
+
+<div class="grid grid-3">
+  <div class="panel">
+    <h3>District-wise Farmer Registrations</h3>
+    <div class="table-wrap"><table class="data"><thead><tr><th>District</th><th>Farmers</th></tr></thead>
+    <tbody>{% for d in district_report %}<tr><td>{{ d.district }}</td><td>{{ d.farmers }}</td></tr>{% empty %}<tr><td colspan="2" class="text-muted">No data</td></tr>{% endfor %}</tbody></table></div>
+  </div>
+  <div class="panel">
+    <h3>Most Popular Products</h3>
+    <div class="table-wrap"><table class="data"><thead><tr><th>Product</th><th>Orders</th><th>Value</th></tr></thead>
+    <tbody>{% for p in product_report %}<tr><td>{{ p.name }}</td><td>{{ p.times_ordered }}</td><td>₹{{ p.value | money }}</td></tr>{% empty %}<tr><td colspan="3" class="text-muted">No data</td></tr>{% endfor %}</tbody></table></div>
+  </div>
+</div>
+{% endblock %}

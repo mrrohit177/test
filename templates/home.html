@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Buy Directly from Farmers{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <h1>{% t "hero.headline" %}</h1>
+    <p>{% t "hero.subtitle" %}</p>
+    <form class="hero-search" method="get" action="/products">
+      <input type="text" name="q" placeholder="{% t 'search.placeholder' %}" aria-label="Search products">
+      <button type="submit" class="btn btn-accent">Search</button>
+    </form>
+    <div class="hero-cta">
+      <a href="/register/farmer" class="btn btn-accent btn-lg">🌱 {% t "cta.start_selling" %}</a>
+      <a href="/register/buyer" class="btn btn-outline btn-lg" style="background:rgba(255,255,255,.12);color:#fff;border-color:#fff">🛒 {% t "cta.start_buying" %}</a>
+      <a href="/products" class="btn btn-ghost btn-lg" style="color:#fff">{% t "cta.explore" %} →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>Popular Categories</h2><a class="link" href="/categories">View all →</a></div>
+    <div class="grid grid-cats">
+      {% for c in categories %}
+        <a class="cat-card" href="/products?category={{ c.slug }}">
+          <div class="emoji">{{ c.icon | default:"🌿" }}</div>
+          <span>{{ c.name_en }}</span>
+        </a>
+      {% empty %}
+        <p class="text-muted">Categories will appear here.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Featured -->
+<section class="section alt">
+  <div class="container">
+    <div class="section-head"><h2>Featured Products</h2><a class="link" href="/products">Browse all →</a></div>
+    {% if featured %}
+      <div class="grid grid-products">
+        {% for product in featured %}{% include "partials/product_card.html" %}{% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state"><div class="emoji">🌾</div><h3>No products listed yet</h3>
+        <p>Be the first farmer to list a product.</p>
+        <a href="/register/farmer" class="btn btn-primary mt-1">Start Selling</a></div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Recently listed -->
+{% if recent %}
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>Recently Listed</h2><a class="link" href="/products?sort=recent">See more →</a></div>
+    <div class="grid grid-products">
+      {% for product in recent %}{% include "partials/product_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Near you -->
+{% if near %}
+<section class="section alt">
+  <div class="container">
+    <div class="section-head"><h2>Available Near You ({{ near_district }})</h2></div>
+    <div class="grid grid-products">
+      {% for product in near %}{% include "partials/product_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Wholesale + Upcoming -->
+<section class="section">
+  <div class="container">
+    {% if wholesale %}
+      <div class="section-head"><h2>Wholesale Deals</h2><a class="link" href="/products?channel=wholesale">More →</a></div>
+      <div class="grid grid-products mb-2">
+        {% for product in wholesale %}{% include "partials/product_card.html" %}{% endfor %}
+      </div>
+    {% endif %}
+    {% if upcoming %}
+      <div class="section-head mt-3"><h2>Upcoming Harvests</h2><a class="link" href="/products?listing=upcoming_harvest">More →</a></div>
+      <div class="grid grid-products">
+        {% for product in upcoming %}{% include "partials/product_card.html" %}{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Top farmers -->
+{% if top_farmers %}
+<section class="section alt">
+  <div class="container">
+    <div class="section-head"><h2>Top-Rated Farmers</h2><a class="link" href="/farmers">Find farmers →</a></div>
+    <div class="grid grid-4">
+      {% for f in top_farmers %}
+      <a class="card" href="/farmers/{{ f.id }}" style="padding:1.2rem;text-align:center;align-items:center">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--fresh-light);display:grid;place-items:center;font-size:1.8rem;margin:0 auto .6rem">👨‍🌾</div>
+        <strong>{{ f.display_name }}</strong>
+        <div class="card-meta" style="justify-content:center">📍 {{ f.district }}</div>
+        <div class="card-meta" style="justify-content:center">⭐ {{ f.rating_avg }} · {{ f.product_count }} products</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- How it works -->
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>How FarmConnect Works</h2></div>
+    <div class="steps">
+      <div class="step"><div class="circle">1</div><h3>Farmer Lists</h3><p class="text-muted">Farmers add products with photos, quantity and their own price.</p></div>
+      <div class="step"><div class="circle">2</div><h3>Buyer Discovers</h3><p class="text-muted">Buyers search and compare listings across districts.</p></div>
+      <div class="step"><div class="circle">3</div><h3>Negotiate</h3><p class="text-muted">Buyer and farmer negotiate price and quantity directly.</p></div>
+      <div class="step"><div class="circle">4</div><h3>Order & Deliver</h3><p class="text-muted">Confirm the order, arrange pickup or delivery, complete the sale.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits -->
+<section class="section alt">
+  <div class="container grid grid-3">
+    <div>
+      <h2>For Farmers</h2>
+      <ul class="benefit-list">
+        <li>Set your own prices — no middlemen cutting your margin</li>
+        <li>Reach buyers across Maharashtra and beyond</li>
+        <li>Manage inventory, enquiries and orders in one place</li>
+        <li>Announce upcoming harvests in advance</li>
+      </ul>
+      <a href="/register/farmer" class="btn btn-primary mt-2">Start Selling</a>
+    </div>
+    <div>
+      <h2>For Buyers</h2>
+      <ul class="benefit-list">
+        <li>Source fresh produce directly from the farm</li>
+        <li>Compare prices and quality grades transparently</li>
+        <li>Buy retail or wholesale with negotiated pricing</li>
+        <li>Track every order from enquiry to delivery</li>
+      </ul>
+      <a href="/register/buyer" class="btn btn-primary mt-2">Start Buying</a>
+    </div>
+    <div>
+      <h2>Trust & Transparency</h2>
+      <ul class="benefit-list">
+        <li>Verified farmer badges from real checks</li>
+        <li>Transaction-based reviews only</li>
+        <li>Market price reference from APMC data</li>
+        <li>Your contact details stay private until you share them</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section">
+  <div class="container">
+    <div class="section-head"><h2>What People Say</h2></div>
+    <div class="grid grid-3">
+      <div class="quote"><div class="stars">★★★★★</div><p>"I sold 50 quintals of onions directly to a Pune trader. Got a better price than the mandi."</p><div class="who">Ramesh P.</div><div class="where">Erandol, Jalgaon</div></div>
+      <div class="quote"><div class="stars">★★★★★</div><p>"As a restaurant owner, I now source vegetables straight from farmers. Fresher and cheaper."</p><div class="who">Sana K.</div><div class="where">Pune</div></div>
+      <div class="quote"><div class="stars">★★★★☆</div><p>"The negotiation feature is brilliant. Clear offer history, no confusion."</p><div class="who">Vikram S.</div><div class="where">Nashik</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section alt">
+  <div class="container" style="max-width:800px">
+    <div class="section-head"><h2>Frequently Asked Questions</h2></div>
+    <details class="faq"><summary>Is it free to register?</summary><p>Yes, farmer and buyer registration is free. The platform may charge a small configurable commission on completed transactions.</p></details>
+    <details class="faq"><summary>How do I get paid?</summary><p>For the MVP, payments are arranged directly between buyer and farmer (cash on delivery, bank transfer, UPI). A secure payment gateway integration is planned.</p></details>
+    <details class="faq"><summary>Are the market prices live?</summary><p>Market prices come from authorised APMC/AGMARKNET data when connected. We never invent live prices — if data is unavailable we say so and show the last known date.</p></details>
+    <details class="faq"><summary>Is my personal information safe?</summary><p>Yes. Identity documents are never shown publicly, passwords are securely hashed, and contact details are shared only with your consent.</p></details>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container text-center">
+    <h2>Ready to grow with FarmConnect?</h2>
+    <p class="lead" style="margin:0 auto 1.25rem">Join farmers and buyers building a transparent agricultural marketplace.</p>
+    <a href="/register/farmer" class="btn btn-primary btn-lg">Start Selling</a>
+    <a href="/register/buyer" class="btn btn-accent btn-lg">Start Buying</a>
+  </div>
+</section>
+{% endblock %}

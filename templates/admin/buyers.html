@@ -1,0 +1,11 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Manage Buyers{% endblock %}
+{% block dash_content %}
+<h1>🛒 Buyers</h1>
+{% if buyers %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Name</th><th>Business</th><th>Type</th><th>Mobile</th><th>District</th><th>Joined</th></tr></thead>
+  <tbody>{% for b in buyers %}<tr><td>{{ b.full_name }}</td><td>{{ b.business_name | default:"—" }}</td><td>{{ b.buyer_type | replace_us | title }}</td><td>{{ b.mobile }}</td><td>{{ b.district | default:"—" }}</td><td>{{ b.joined | date }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">🛒</div><p>No buyers registered.</p></div>{% endif %}
+{% endblock %}

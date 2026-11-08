@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block footer %}{% endblock %}
+{% block content %}
+<div class="dash">
+  <aside class="dash-sidebar">
+    <div class="side-user">
+      <div class="name">{{ user.full_name }}</div>
+      <div class="role">{{ user.role }}</div>
+    </div>
+    {% block sidebar %}{% endblock %}
+  </aside>
+
+  <div class="dash-mobile-nav">
+    {% block mobile_nav %}{% endblock %}
+  </div>
+
+  <main class="dash-main">
+    {% block dash_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

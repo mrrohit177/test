@@ -1,0 +1,38 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}My Products{% endblock %}
+{% block sidebar %}{% include "dashboard/farmer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/farmer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<div class="flex between items-center"><h1>🌾 My Products</h1><a href="/farmer/products/new" class="btn btn-primary">➕ Add Product</a></div>
+
+{% if products %}
+<div class="grid grid-products mt-2">
+  {% for p in products %}
+  <article class="card">
+    <a href="/products/{{ p.id }}" class="card-img">
+      {% if p.image_path %}<img src="{{ MEDIA_URL }}{{ p.image_path }}" alt="{{ p.name }}">{% else %}<div class="placeholder">🌾</div>{% endif %}
+    </a>
+    <div class="card-body">
+      <div class="pill-row"><span class="status-pill status-{{ p.status }}">{{ p.status | replace_us }}</span></div>
+      <h3 class="card-title">{{ p.name }}</h3>
+      <div class="card-price">₹{{ p.price | money }} <small>/ {{ p.unit_label }}</small></div>
+      <div class="card-meta"><span>📦 {{ p.available_qty }} avail</span><span>🔒 {{ p.reserved_qty }} reserved</span></div>
+      <div class="card-meta"><span>👁 {{ p.view_count }} views</span><span>📨 {{ p.enquiry_count }} enquiries</span></div>
+      <div class="card-actions" style="flex-wrap:wrap">
+        <a href="/farmer/products/{{ p.id }}/edit" class="btn btn-sm btn-outline">Edit</a>
+        {% if p.status == 'active' %}
+        <form method="post" action="/farmer/products/{{ p.id }}/status"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="paused"><button class="btn btn-sm btn-ghost">Pause</button></form>
+        <form method="post" action="/farmer/products/{{ p.id }}/status"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="sold_out"><button class="btn btn-sm btn-ghost">Sold Out</button></form>
+        {% else %}
+        <form method="post" action="/farmer/products/{{ p.id }}/status"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="active"><button class="btn btn-sm btn-ghost">Activate</button></form>
+        {% endif %}
+        <form method="post" action="/farmer/products/{{ p.id }}/delete" data-confirm="Delete this listing?"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-sm btn-danger">Delete</button></form>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="emoji">🌾</div><h3>No products yet</h3><p>Add your first product to start selling.</p><a href="/farmer/products/new" class="btn btn-primary mt-1">Add Product</a></div>
+{% endif %}
+{% endblock %}

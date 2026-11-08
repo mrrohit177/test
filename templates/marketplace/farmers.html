@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Find Farmers{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Find Farmers</h1>
+    <form method="get" action="/farmers" class="flex gap-1 wrap mb-2">
+      <input class="form-control" style="max-width:280px" name="q" value="{{ q }}" placeholder="Search by name or village">
+      <select class="form-control" style="max-width:220px" name="district">
+        <option value="">All districts</option>
+        {% for d in districts %}<option value="{{ d }}" {% if district == d %}selected{% endif %}>{{ d }}</option>{% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
+    {% if farmers %}
+    <div class="grid grid-4">
+      {% for f in farmers %}
+      <a class="card" href="/farmers/{{ f.id }}" style="padding:1.4rem;text-align:center;align-items:center">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--fresh-light);display:grid;place-items:center;font-size:1.8rem;margin-bottom:.6rem">👨‍🌾</div>
+        <strong>{{ f.display_name | default:f.full_name }}</strong>
+        {% if f.verification_level == 'farm_verified' or f.verification_level == 'identity_verified' %}<span class="badge badge-verified">✓ Verified</span>{% endif %}
+        <div class="card-meta" style="justify-content:center">📍 {{ f.village | default:f.district }}, {{ f.district }}</div>
+        <div class="card-meta" style="justify-content:center">⭐ {{ f.rating_avg }} · {{ f.product_count }} products</div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="emoji">👨‍🌾</div><h3>No farmers found</h3><p>Try a different search.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card">
+      <h1 class="text-center">Welcome Back</h1>
+      <p class="text-muted text-center">Log in to your FarmConnect account.</p>
+      <form method="post" action="/login">
+        {% csrf %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="form-group">
+          <label>Mobile number or Email</label>
+          <input class="form-control {% if form.errors.identifier %}is-invalid{% endif %}" name="identifier" value="{{ form.data.identifier | default:'' }}" required>
+          {% if form.errors.identifier %}<div class="field-error">{{ form.errors.identifier }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input class="form-control {% if form.errors.password %}is-invalid{% endif %}" type="password" name="password" required>
+          {% if form.errors.password %}<div class="field-error">{{ form.errors.password }}</div>{% endif %}
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Log In</button>
+      </form>
+      <p class="text-center mt-2 text-muted">New here? <a href="/register">Create an account</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

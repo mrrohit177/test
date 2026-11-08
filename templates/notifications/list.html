@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<section class="section"><div class="container" style="max-width:760px">
+  <div class="flex between items-center">
+    <h1>🔔 Notifications</h1>
+    {% if notifications %}
+    <form method="post" action="/notifications/read-all">{% csrf %}<button class="btn btn-ghost btn-sm">Mark all read</button></form>
+    {% endif %}
+  </div>
+  {% if notifications %}
+    {% for n in notifications %}
+    <div class="panel" style="{% if n.is_read %}opacity:.65{% else %}border-left:4px solid var(--forest){% endif %};margin-bottom:.6rem">
+      <div class="flex between items-center">
+        <div>
+          <strong>{{ n.title }}</strong>
+          <p class="text-muted" style="margin:.2rem 0">{{ n.body }}</p>
+          <small class="text-muted">{{ n.created_at | date:"%d %b %Y %H:%M" }}</small>
+        </div>
+        <div class="flex gap-1">
+          {% if n.link %}<a href="{{ n.link }}" class="btn btn-sm btn-outline">Open</a>{% endif %}
+          {% if n.is_read %}{% else %}
+          <form method="post" action="/notifications/{{ n.id }}/read">{% csrf %}<input type="hidden" name="link" value="{{ n.link }}"><button class="btn btn-sm btn-ghost">✓</button></form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state"><div class="emoji">🔕</div><h3>No notifications</h3><p>You're all caught up.</p></div>
+  {% endif %}
+</div></section>
+{% endblock %}

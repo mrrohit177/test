@@ -1,0 +1,40 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Manage Inventory{% endblock %}
+{% block sidebar %}{% include "dashboard/farmer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/farmer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<h1>📦 Manage Inventory</h1>
+<p class="text-muted">Update stock and prices directly. Reserved stock is held by active orders and cannot go negative.</p>
+
+{% if products %}
+<div class="table-wrap mt-2"><table class="data">
+  <thead><tr><th>Product</th><th>Available</th><th>Reserved</th><th>Sold</th><th>Update Stock</th><th>Update Price</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td><strong>{{ p.name }}</strong><br><small class="text-muted">{{ p.unit_label }}</small></td>
+      <td>{{ p.available_qty }}</td>
+      <td>{{ p.reserved_qty }}</td>
+      <td>{{ p.sold_qty }}</td>
+      <td>
+        <form method="post" action="/farmer/products/{{ p.id }}/stock" class="flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input class="form-control" style="width:90px" name="available_qty" value="{{ p.available_qty }}">
+          <button class="btn btn-sm btn-primary">Set</button>
+        </form>
+      </td>
+      <td>
+        <form method="post" action="/farmer/products/{{ p.id }}/price" class="flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input class="form-control" style="width:90px" name="price" value="{{ p.price }}">
+          <button class="btn btn-sm btn-primary">Set</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="empty-state"><div class="emoji">📦</div><p>No products to manage. <a href="/farmer/products/new">Add one</a>.</p></div>
+{% endif %}
+{% endblock %}

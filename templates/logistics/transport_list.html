@@ -1,0 +1,14 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Transport{% endblock %}
+{% block sidebar %}{% if role == 'farmer' %}{% include "dashboard/farmer_sidebar.html" %}{% else %}{% include "dashboard/buyer_sidebar.html" %}{% endif %}{% endblock %}
+{% block mobile_nav %}{% if role == 'farmer' %}{% include "dashboard/farmer_mobile_nav.html" %}{% else %}{% include "dashboard/buyer_mobile_nav.html" %}{% endif %}{% endblock %}
+{% block dash_content %}
+<div class="flex between items-center"><h1>🚚 Transport Requests</h1><a href="/transport/new" class="btn btn-primary">+ New Request</a></div>
+<p class="text-muted">Coordinate pickup and delivery. Transport-partner quotations are coming soon — for now this records your logistics needs.</p>
+{% if requests %}
+<div class="table-wrap mt-2"><table class="data">
+  <thead><tr><th>Pickup</th><th>Delivery</th><th>Product</th><th>Qty</th><th>Vehicle</th><th>Date</th><th>Status</th></tr></thead>
+  <tbody>{% for r in requests %}<tr><td>{{ r.pickup_district }}</td><td>{{ r.delivery_district }}</td><td>{{ r.product_type | default:"—" }}</td><td>{{ r.quantity | default:"—" }} {{ r.unit | default:'' }}</td><td>{{ r.vehicle_requirement | default:"—" }}</td><td>{{ r.preferred_date | default:"—" }}</td><td><span class="status-pill status-{{ r.status }}">{{ r.status | replace_us }}</span></td></tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">🚚</div><h3>No transport requests</h3><p>Create one to record pickup/delivery needs.</p></div>{% endif %}
+{% endblock %}

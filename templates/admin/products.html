@@ -1,0 +1,26 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Moderate Products{% endblock %}
+{% block dash_content %}
+<h1>🌾 Products</h1>
+{% if products %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Product</th><th>Farmer</th><th>Price</th><th>District</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td><a href="/products/{{ p.id }}">{{ p.name }}</a></td><td>{{ p.farmer_name }}</td>
+      <td>₹{{ p.price | money }}/{{ p.unit }}</td><td>{{ p.district }}</td>
+      <td><span class="status-pill status-{{ p.status }}">{{ p.status | replace_us }}</span></td>
+      <td>
+        <form method="post" action="/admin/products/{{ p.id }}/action" data-confirm="Change product state?">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          {% if p.status == 'deleted' %}<input type="hidden" name="action" value="reinstate"><button class="btn btn-sm btn-outline">Reinstate</button>
+          {% else %}<input type="hidden" name="action" value="remove"><button class="btn btn-sm btn-danger">Remove</button>{% endif %}
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">🌾</div><p>No products.</p></div>{% endif %}
+{% endblock %}

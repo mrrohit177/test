@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Buyer Registration{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card form-wide">
+      <h1 class="text-center">🛒 Buyer Registration</h1>
+      <p class="text-muted text-center">Register as an individual or a business. Fields marked * are required.</p>
+      <form method="post" action="/register/buyer">
+        {% csrf %}
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input class="form-control {% if form.errors.full_name %}is-invalid{% endif %}" name="full_name" value="{{ form.data.full_name | default:'' }}" required>
+            {% if form.errors.full_name %}<div class="field-error">{{ form.errors.full_name }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>Buyer Category *</label>
+            <select class="form-control" name="buyer_type">
+              {% for b in buyer_types %}<option value="{{ b.value }}">{{ b.label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Business Name <span class="hint">(optional)</span></label><input class="form-control" name="business_name" value="{{ form.data.business_name | default:'' }}"></div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Mobile Number *</label>
+            <input class="form-control {% if form.errors.mobile %}is-invalid{% endif %}" name="mobile" value="{{ form.data.mobile | default:'' }}" required>
+            {% if form.errors.mobile %}<div class="field-error">{{ form.errors.mobile }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="form-control {% if form.errors.email %}is-invalid{% endif %}" name="email" value="{{ form.data.email | default:'' }}">
+            {% if form.errors.email %}<div class="field-error">{{ form.errors.email }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Password *</label>
+            <input class="form-control {% if form.errors.password %}is-invalid{% endif %}" type="password" name="password" required>
+            {% if form.errors.password %}<div class="field-error">{{ form.errors.password }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <input class="form-control {% if form.errors.confirm_password %}is-invalid{% endif %}" type="password" name="confirm_password" required>
+            {% if form.errors.confirm_password %}<div class="field-error">{{ form.errors.confirm_password }}</div>{% endif %}
+          </div>
+        </div>
+        <hr class="divider">
+        <div class="form-row cols-3">
+          <div class="form-group"><label>City</label><input class="form-control" name="city" value="{{ form.data.city | default:'' }}"></div>
+          <div class="form-group">
+            <label>District *</label>
+            <input class="form-control {% if form.errors.district %}is-invalid{% endif %}" name="district" value="{{ form.data.district | default:'' }}" required>
+            {% if form.errors.district %}<div class="field-error">{{ form.errors.district }}</div>{% endif %}
+          </div>
+          <div class="form-group"><label>State</label><input class="form-control" name="state" value="{{ form.data.state | default:'Maharashtra' }}"></div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group"><label>PIN Code</label><input class="form-control {% if form.errors.pincode %}is-invalid{% endif %}" name="pincode" value="{{ form.data.pincode | default:'' }}">{% if form.errors.pincode %}<div class="field-error">{{ form.errors.pincode }}</div>{% endif %}</div>
+          <div class="form-group"><label>GST Number <span class="hint">(optional)</span></label><input class="form-control" name="gst_number" value="{{ form.data.gst_number | default:'' }}"></div>
+        </div>
+        <div class="form-group"><label>Business Address</label><textarea class="form-control" name="business_address">{{ form.data.business_address | default:'' }}</textarea></div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Create Buyer Account</button>
+      </form>
+      <p class="text-center mt-2 text-muted">Want to sell instead? <a href="/register/farmer">Register as a farmer</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

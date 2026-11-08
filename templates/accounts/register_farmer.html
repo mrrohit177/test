@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Farmer Registration{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card form-wide">
+      <h1 class="text-center">🌱 Farmer Registration</h1>
+      <p class="text-muted text-center">Simple steps to start selling. Fields marked * are required.</p>
+      <form method="post" action="/register/farmer">
+        {% csrf %}
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input class="form-control {% if form.errors.full_name %}is-invalid{% endif %}" name="full_name" value="{{ form.data.full_name | default:'' }}" required>
+            {% if form.errors.full_name %}<div class="field-error">{{ form.errors.full_name }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>Mobile Number *</label>
+            <input class="form-control {% if form.errors.mobile %}is-invalid{% endif %}" name="mobile" value="{{ form.data.mobile | default:'' }}" placeholder="10-digit mobile" required>
+            {% if form.errors.mobile %}<div class="field-error">{{ form.errors.mobile }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email <span class="hint">(optional)</span></label>
+          <input class="form-control {% if form.errors.email %}is-invalid{% endif %}" name="email" value="{{ form.data.email | default:'' }}">
+          {% if form.errors.email %}<div class="field-error">{{ form.errors.email }}</div>{% endif %}
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label>Password *</label>
+            <input class="form-control {% if form.errors.password %}is-invalid{% endif %}" type="password" name="password" required>
+            {% if form.errors.password %}<div class="field-error">{{ form.errors.password }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <input class="form-control {% if form.errors.confirm_password %}is-invalid{% endif %}" type="password" name="confirm_password" required>
+            {% if form.errors.confirm_password %}<div class="field-error">{{ form.errors.confirm_password }}</div>{% endif %}
+          </div>
+        </div>
+        <hr class="divider">
+        <div class="form-row cols-3">
+          <div class="form-group"><label>Village</label><input class="form-control" name="village" value="{{ form.data.village | default:'' }}"></div>
+          <div class="form-group"><label>Taluka</label><input class="form-control" name="taluka" value="{{ form.data.taluka | default:'' }}"></div>
+          <div class="form-group">
+            <label>District *</label>
+            <input class="form-control {% if form.errors.district %}is-invalid{% endif %}" name="district" value="{{ form.data.district | default:'' }}" required>
+            {% if form.errors.district %}<div class="field-error">{{ form.errors.district }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-row cols-3">
+          <div class="form-group"><label>State</label><input class="form-control" name="state" value="{{ form.data.state | default:'Maharashtra' }}"></div>
+          <div class="form-group"><label>PIN Code</label><input class="form-control {% if form.errors.pincode %}is-invalid{% endif %}" name="pincode" value="{{ form.data.pincode | default:'' }}">{% if form.errors.pincode %}<div class="field-error">{{ form.errors.pincode }}</div>{% endif %}</div>
+          <div class="form-group"><label>Land (acres)</label><input class="form-control" name="total_land_acres" value="{{ form.data.total_land_acres | default:'' }}"></div>
+        </div>
+        <div class="form-group"><label>Farm Location</label><input class="form-control" name="farm_location" value="{{ form.data.farm_location | default:'' }}" placeholder="e.g. 2 km from Erandol bus stand"></div>
+        <div class="form-group"><label>Main Crops</label><input class="form-control" name="main_crops" value="{{ form.data.main_crops | default:'' }}" placeholder="e.g. Onion, Wheat, Cotton"></div>
+        <div class="form-group">
+          <label>Preferred Language</label>
+          <select class="form-control" name="preferred_language">
+            <option value="en">English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" type="submit">Create Farmer Account</button>
+      </form>
+      <p class="text-center mt-2 text-muted">Want to buy instead? <a href="/register/buyer">Register as a buyer</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}My Enquiries{% endblock %}
+{% block sidebar %}{% include "dashboard/buyer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/buyer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<h1>📨 My Enquiries</h1>
+{% if enquiries %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Product</th><th>Farmer</th><th>Qty</th><th>Status</th><th>Date</th></tr></thead>
+  <tbody>
+    {% for e in enquiries %}
+    <tr><td>{{ e.product_name }}</td><td>{{ e.farmer_name }}</td><td>{{ e.required_qty | default:"—" }} {{ e.unit }}</td>
+    <td><span class="status-pill status-{{ e.status }}">{{ e.status }}</span></td><td>{{ e.created_at | date }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+<p class="text-muted mt-2">Continue negotiating from <a href="/buyer/negotiations">Negotiations</a>.</p>
+{% else %}
+<div class="empty-state"><div class="emoji">📨</div><h3>No enquiries yet</h3><p><a href="/products">Browse products</a> and send an enquiry.</p></div>
+{% endif %}
+{% endblock %}

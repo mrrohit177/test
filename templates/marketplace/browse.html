@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Browse Products{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Browse Products</h1>
+    <form method="get" action="/products" class="panel" style="margin-bottom:1.5rem">
+      <div class="form-row cols-3">
+        <div class="form-group" style="margin:0">
+          <label>Search</label>
+          <input class="form-control" name="q" value="{{ filters.q }}" placeholder="Product, farmer or location">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Category</label>
+          <select class="form-control" name="category">
+            <option value="">All categories</option>
+            {% for c in categories %}<option value="{{ c.slug }}" {% if filters.category == c.slug %}selected{% endif %}>{{ c.name_en }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>District</label>
+          <select class="form-control" name="district">
+            <option value="">All districts</option>
+            {% for d in districts %}<option value="{{ d }}" {% if filters.district == d %}selected{% endif %}>{{ d }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-row cols-3 mt-2">
+        <div class="form-group" style="margin:0">
+          <label>Grade</label>
+          <select class="form-control" name="grade">
+            <option value="">Any grade</option>
+            {% for g in grades %}<option value="{{ g.value }}" {% if filters.grade == g.value %}selected{% endif %}>{{ g.label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Channel</label>
+          <select class="form-control" name="channel">
+            <option value="">Retail & Wholesale</option>
+            <option value="retail" {% if filters.channel == 'retail' %}selected{% endif %}>Retail</option>
+            <option value="wholesale" {% if filters.channel == 'wholesale' %}selected{% endif %}>Wholesale</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Sort by</label>
+          <select class="form-control" name="sort">
+            <option value="recent" {% if filters.sort == 'recent' %}selected{% endif %}>Recently Added</option>
+            <option value="price_asc" {% if filters.sort == 'price_asc' %}selected{% endif %}>Lowest Price</option>
+            <option value="price_desc" {% if filters.sort == 'price_desc' %}selected{% endif %}>Highest Price</option>
+            <option value="quantity" {% if filters.sort == 'quantity' %}selected{% endif %}>Highest Quantity</option>
+            <option value="rating" {% if filters.sort == 'rating' %}selected{% endif %}>Best Rated Farmers</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row cols-3 mt-2">
+        <div class="form-group" style="margin:0"><label>Min Price (₹)</label><input class="form-control" name="min_price" value="{{ filters.min_price }}"></div>
+        <div class="form-group" style="margin:0"><label>Max Price (₹)</label><input class="form-control" name="max_price" value="{{ filters.max_price }}"></div>
+        <div class="form-group" style="margin:0;display:flex;align-items:flex-end;gap:1rem">
+          <label class="checkbox-row" style="margin:0"><input type="checkbox" name="verified" value="1" {% if filters.verified == '1' %}checked{% endif %}> Verified only</label>
+          <label class="checkbox-row" style="margin:0"><input type="checkbox" name="delivery" value="1" {% if filters.delivery == '1' %}checked{% endif %}> Delivery</label>
+        </div>
+      </div>
+      <input type="hidden" name="listing" value="{{ filters.listing }}">
+      <div class="mt-2 flex gap-1">
+        <button class="btn btn-primary" type="submit">Apply Filters</button>
+        <a class="btn btn-ghost" href="/products">Reset</a>
+      </div>
+    </form>
+
+    <p class="text-muted">{{ total }} product(s) found{% if filters.listing == 'upcoming_harvest' %} · showing upcoming harvests{% endif %}.</p>
+
+    {% if products %}
+      <div class="grid grid-products">
+        {% for product in products %}{% include "partials/product_card.html" %}{% endfor %}
+      </div>
+      {% if total_pages > 1 %}
+      <div class="flex gap-1 mt-3" style="justify-content:center;align-items:center">
+        {% if has_prev %}<a class="btn btn-outline btn-sm" href="/products?{{ query_string }}&page={{ prev_page }}">← Prev</a>{% endif %}
+        <span class="text-muted">Page {{ page }} of {{ total_pages }}</span>
+        {% if has_next %}<a class="btn btn-outline btn-sm" href="/products?{{ query_string }}&page={{ next_page }}">Next →</a>{% endif %}
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state"><div class="emoji">🔍</div><h3>No products match your search</h3>
+        <p>Try adjusting your filters or search terms.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

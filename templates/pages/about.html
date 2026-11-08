@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}About Us{% endblock %}
+{% block content %}
+<section class="hero" style="padding:2.5rem 0"><div class="container"><h1>About FarmConnect</h1><p>{{ SITE_TAGLINE }}</p></div></section>
+<section class="section"><div class="container" style="max-width:800px">
+  <p class="lead">FarmConnect is an India-first digital marketplace that connects farmers directly with buyers — eliminating unnecessary intermediaries and building a transparent agricultural trading ecosystem.</p>
+  <p>A farmer in a small village can list produce, set their own price, receive enquiries and sell directly to a buyer in another city or state. Our initial focus is Maharashtra, with an architecture designed to expand across India.</p>
+  <h2>Our Mission</h2>
+  <p>To empower farmers with fair prices and give buyers direct access to fresh agricultural produce, with transparency at every step.</p>
+  <div class="flex gap-1 mt-2"><a href="/register/farmer" class="btn btn-primary">Start Selling</a><a href="/register/buyer" class="btn btn-outline">Start Buying</a></div>
+</div></section>
+{% endblock %}

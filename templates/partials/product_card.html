@@ -1,0 +1,31 @@
+<article class="card">
+  <a href="/products/{{ product.id }}" class="card-img">
+    {% if product.image_path %}
+      <img src="{{ MEDIA_URL }}{{ product.image_path }}" alt="{{ product.name }}" loading="lazy">
+    {% else %}
+      <div class="placeholder">🌾</div>
+    {% endif %}
+  </a>
+  <div class="card-body">
+    <div class="pill-row">
+      {% if product.is_verified %}<span class="badge badge-verified">✓ Verified</span>{% endif %}
+      {% if product.is_organic %}<span class="badge badge-organic">Organic</span>{% endif %}
+      {% if product.listing_type == "upcoming_harvest" %}<span class="badge badge-yellow">Upcoming</span>{% endif %}
+    </div>
+    <h3 class="card-title"><a href="/products/{{ product.id }}">{{ product.name }}</a></h3>
+    <div class="card-price">₹{{ product.price | money }} <small>/ {{ product.unit_label }}</small></div>
+    <div class="card-meta">
+      <span>📦 {{ product.available_qty | default:"0" }} {{ product.unit_label }}</span>
+      <span>🏅 {{ product.grade_label }}</span>
+    </div>
+    <div class="card-meta">
+      <span>👨‍🌾 {{ product.farmer_name }}</span>
+    </div>
+    <div class="card-meta">
+      <span>📍 {{ product.farmer_village | default:product.district }}, {{ product.farmer_district }}</span>
+    </div>
+    <div class="card-actions">
+      <a href="/products/{{ product.id }}" class="btn btn-primary btn-sm btn-block">View Product</a>
+    </div>
+  </div>
+</article>

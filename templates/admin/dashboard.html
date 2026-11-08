@@ -1,0 +1,32 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Admin Overview{% endblock %}
+{% block dash_content %}
+<h1>📊 Admin Overview</h1>
+<div class="stats-grid mt-2 mb-2">
+  <div class="stat"><div class="num">{{ stats.farmers }}</div><div class="lbl">Farmers</div></div>
+  <div class="stat"><div class="num">{{ stats.buyers }}</div><div class="lbl">Buyers</div></div>
+  <div class="stat"><div class="num">{{ stats.verified_farmers }}</div><div class="lbl">Verified Farmers</div></div>
+  <div class="stat"><div class="num">{{ stats.products }}</div><div class="lbl">Products</div></div>
+  <div class="stat"><div class="num">{{ stats.active }}</div><div class="lbl">Active Listings</div></div>
+  <div class="stat"><div class="num">{{ stats.orders }}</div><div class="lbl">Total Orders</div></div>
+  <div class="stat accent"><div class="num">{{ stats.pending_orders }}</div><div class="lbl">Pending Orders</div></div>
+  <div class="stat"><div class="num">{{ stats.completed_orders }}</div><div class="lbl">Completed</div></div>
+  <div class="stat"><div class="num">{{ stats.enquiries }}</div><div class="lbl">Enquiries</div></div>
+  <div class="stat"><div class="num">{{ stats.disputes }}</div><div class="lbl">Open Disputes</div></div>
+  <div class="stat"><div class="num">₹{{ stats.revenue | money }}</div><div class="lbl">Completed GMV</div></div>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Recent Orders</h3><a class="link" href="/admin/orders">View all →</a></div>
+  {% if recent_orders %}
+  <div class="table-wrap"><table class="data"><thead><tr><th>Order</th><th>Farmer</th><th>Buyer</th><th>Amount</th><th>Status</th></tr></thead>
+  <tbody>{% for o in recent_orders %}<tr><td>{{ o.order_number }}</td><td>{{ o.farmer_name }}</td><td>{{ o.buyer_name }}</td><td>₹{{ o.total_amount | money }}</td><td><span class="status-pill status-{{ o.status }}">{{ o.status | replace_us }}</span></td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="text-muted">No orders yet.</p>{% endif %}
+</div>
+
+<div class="grid grid-3">
+  <div class="panel"><h3>Farmers by District</h3><ul>{% for d in districts %}<li>{{ d.district }} — <strong>{{ d.n }}</strong></li>{% empty %}<li class="text-muted">No data</li>{% endfor %}</ul></div>
+  <div class="panel"><h3>Top Products</h3><ul>{% for p in top_products %}<li>{{ p.name }} — <strong>{{ p.orders }}</strong> orders</li>{% empty %}<li class="text-muted">No data</li>{% endfor %}</ul></div>
+</div>
+{% endblock %}

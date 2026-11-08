@@ -1,0 +1,45 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Buyer Dashboard{% endblock %}
+{% block sidebar %}{% include "dashboard/buyer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/buyer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<h1>Welcome, {{ user.full_name }} 👋</h1>
+<p class="text-muted">{{ buyer.business_name | default:"Your buyer account" }} · {{ buyer.buyer_type | replace_us | title }}</p>
+
+<div class="stats-grid mt-2 mb-2">
+  <div class="stat"><div class="num">{{ stats.enquiries }}</div><div class="lbl">Total Enquiries</div></div>
+  <div class="stat accent"><div class="num">{{ stats.active_orders }}</div><div class="lbl">Active Orders</div></div>
+  <div class="stat"><div class="num">{{ stats.pending }}</div><div class="lbl">Pending Orders</div></div>
+  <div class="stat"><div class="num">{{ stats.completed }}</div><div class="lbl">Completed Orders</div></div>
+  <div class="stat"><div class="num">{{ stats.saved }}</div><div class="lbl">Saved Products</div></div>
+  <div class="stat"><div class="num">{{ stats.negotiations }}</div><div class="lbl">Open Negotiations</div></div>
+</div>
+
+<div class="flex gap-1 wrap mb-2">
+  <a href="/products" class="btn btn-primary">🛒 Browse Products</a>
+  <a href="/farmers" class="btn btn-outline">👨‍🌾 Find Farmers</a>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><h3>Recent Orders</h3><a class="link" href="/buyer/orders">View all →</a></div>
+  {% if recent_orders %}
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Order</th><th>Farmer</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for o in recent_orders %}
+      <tr><td>{{ o.order_number }}</td><td>{{ o.farmer_name }}</td><td>₹{{ o.total_amount | money }}</td>
+      <td><span class="status-pill status-{{ o.status }}">{{ o.status | replace_us }}</span></td>
+      <td><a href="/orders/{{ o.id }}" class="btn btn-sm btn-ghost">Open</a></td></tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<div class="empty-state"><div class="emoji">🧾</div><p>No orders yet. <a href="/products">Browse products</a> to get started.</p></div>{% endif %}
+</div>
+
+{% if wishlist %}
+<div class="panel">
+  <div class="panel-head"><h3>Your Wishlist</h3><a class="link" href="/buyer/wishlist">View all →</a></div>
+  <ul>{% for w in wishlist %}<li><a href="/products/{{ w.product_id }}">{{ w.name }}</a> — ₹{{ w.price | money }}/{{ w.unit }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+{% endblock %}

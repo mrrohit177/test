@@ -1,0 +1,9 @@
+<a href="/dashboard" class="{% if active_nav == 'dashboard' %}active{% endif %}">Dashboard</a>
+<a href="/farmer/products/new" class="{% if active_nav == 'add_product' %}active{% endif %}">Add</a>
+<a href="/farmer/products" class="{% if active_nav == 'products' %}active{% endif %}">Products</a>
+<a href="/farmer/inventory" class="{% if active_nav == 'inventory' %}active{% endif %}">Inventory</a>
+<a href="/farmer/enquiries" class="{% if active_nav == 'enquiries' %}active{% endif %}">Enquiries</a>
+<a href="/farmer/negotiations" class="{% if active_nav == 'negotiations' %}active{% endif %}">Negotiate</a>
+<a href="/farmer/orders" class="{% if active_nav == 'orders' %}active{% endif %}">Orders</a>
+<a href="/farmer/sales" class="{% if active_nav == 'sales' %}active{% endif %}">Sales</a>
+<a href="/notifications">🔔 {% if unread %}{{ unread }}{% endif %}</a>

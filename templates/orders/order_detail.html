@@ -1,0 +1,73 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block sidebar %}{% if role == 'farmer' %}{% include "dashboard/farmer_sidebar.html" %}{% else %}{% include "dashboard/buyer_sidebar.html" %}{% endif %}{% endblock %}
+{% block mobile_nav %}{% if role == 'farmer' %}{% include "dashboard/farmer_mobile_nav.html" %}{% else %}{% include "dashboard/buyer_mobile_nav.html" %}{% endif %}{% endblock %}
+{% block dash_content %}
+<div class="flex between items-center wrap">
+  <h1>Order {{ order.order_number }}</h1>
+  <span class="status-pill status-{{ order.status }}" style="font-size:.9rem">{{ order.status_label }}</span>
+</div>
+
+<div class="panel">
+  <div class="table-wrap"><table class="data">
+    <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead>
+    <tbody>
+      {% for it in order.items %}
+      <tr><td>{{ it.product_name }}</td><td>{{ it.quantity }} {{ it.unit }}</td><td>₹{{ it.unit_price | money }}</td><td>₹{{ it.line_total | money }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  <div class="mt-2" style="max-width:320px;margin-left:auto">
+    <div class="flex between"><span class="text-muted">Product amount</span><span>₹{{ order.product_amount | money }}</span></div>
+    <div class="flex between"><span class="text-muted">Transport</span><span>₹{{ order.transport_amount | money }}</span></div>
+    <div class="flex between"><span class="text-muted">Platform fee</span><span>₹{{ order.platform_fee | money }}</span></div>
+    <div class="flex between"><span class="text-muted">Tax</span><span>₹{{ order.tax_amount | money }}</span></div>
+    <hr class="divider" style="margin:.5rem 0">
+    <div class="flex between"><strong>Total</strong><strong>₹{{ order.total_amount | money }}</strong></div>
+    <div class="flex between mt-1"><span class="text-muted">Payment</span><span class="status-pill status-{{ order.payment_status }}">{{ order.payment_status | replace_us }}</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>Details</h3>
+  <div class="flex between"><span class="text-muted">Farmer</span><span>{{ order.farmer_name }}</span></div>
+  <hr class="divider" style="margin:.5rem 0">
+  <div class="flex between"><span class="text-muted">Buyer</span><span>{{ order.buyer_name }}{% if order.buyer_business %} ({{ order.buyer_business }}){% endif %}</span></div>
+  <hr class="divider" style="margin:.5rem 0">
+  <div class="flex between"><span class="text-muted">Fulfilment</span><span>{{ order.fulfilment_method | title }}</span></div>
+  <hr class="divider" style="margin:.5rem 0">
+  <div class="flex between"><span class="text-muted">Placed</span><span>{{ order.created_at | date:"%d %b %Y %H:%M" }}</span></div>
+</div>
+
+{% if next_states %}
+<div class="panel">
+  <h3>Update Status</h3>
+  {% if role == 'farmer' %}
+  <p class="text-muted">As the farmer, move this order through fulfilment.</p>
+  <div class="flex gap-1 wrap">
+    {% for s in next_states %}
+      {% if s != 'completed' %}
+      <form method="post" action="/orders/{{ order.id }}/status" {% if s == 'rejected' or s == 'cancelled' %}data-confirm="Are you sure?"{% endif %}>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="status" value="{{ s }}">
+        <button class="btn btn-sm {% if s == 'rejected' or s == 'cancelled' %}btn-danger{% else %}btn-primary{% endif %}">{{ status_labels[s] | default:s }}</button>
+      </form>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">As the buyer, confirm receipt when the order is ready or dispatched, or cancel while still pending.</p>
+  <div class="flex gap-1 wrap">
+    {% if order.status == 'pending' or order.status == 'accepted' %}
+    <form method="post" action="/orders/{{ order.id }}/status" data-confirm="Cancel this order?"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="cancelled"><button class="btn btn-sm btn-danger">Cancel Order</button></form>
+    {% endif %}
+    {% if order.status == 'ready_for_pickup' or order.status == 'dispatched' or order.status == 'delivered' %}
+    <form method="post" action="/orders/{{ order.id }}/status"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="status" value="completed"><button class="btn btn-sm btn-primary">✓ Confirm Receipt (Complete)</button></form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+<a href="{% if role == 'farmer' %}/farmer/orders{% else %}/buyer/orders{% endif %}" class="btn btn-ghost">← Back to orders</a>
+{% endblock %}

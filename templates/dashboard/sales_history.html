@@ -1,0 +1,14 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Sales History{% endblock %}
+{% block sidebar %}{% include "dashboard/farmer_sidebar.html" %}{% endblock %}
+{% block mobile_nav %}{% include "dashboard/farmer_mobile_nav.html" %}{% endblock %}
+{% block dash_content %}
+<h1>💰 Sales History</h1>
+<div class="stat mb-2" style="max-width:280px"><div class="num">₹{{ total | money }}</div><div class="lbl">Total Completed Sales</div></div>
+{% if orders %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Order</th><th>Buyer</th><th>Amount</th><th>Completed</th><th></th></tr></thead>
+  <tbody>{% for o in orders %}<tr><td>{{ o.order_number }}</td><td>{{ o.buyer_name }}</td><td>₹{{ o.total_amount | money }}</td><td>{{ o.completed_at | date }}</td><td><a href="/orders/{{ o.id }}" class="btn btn-sm btn-outline">Open</a></td></tr>{% endfor %}</tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">💰</div><h3>No completed sales yet</h3></div>{% endif %}
+{% endblock %}

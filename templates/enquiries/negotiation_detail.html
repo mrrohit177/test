@@ -1,0 +1,76 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Negotiation{% endblock %}
+{% block sidebar %}{% if role == 'farmer' %}{% include "dashboard/farmer_sidebar.html" %}{% else %}{% include "dashboard/buyer_sidebar.html" %}{% endif %}{% endblock %}
+{% block mobile_nav %}{% if role == 'farmer' %}{% include "dashboard/farmer_mobile_nav.html" %}{% else %}{% include "dashboard/buyer_mobile_nav.html" %}{% endif %}{% endblock %}
+{% block dash_content %}
+<div class="flex between items-center wrap">
+  <h1>🤝 Negotiation</h1>
+  <a href="/products/{{ product.id }}" class="btn btn-sm btn-ghost">View Product</a>
+</div>
+<p class="text-muted">Product: <strong>{{ product.name }}</strong> · Listed at ₹{{ product.price | money }}/{{ product.unit }}
+{% if inventory %} · {{ inventory.available_qty }} available{% endif %}</p>
+
+<div class="panel">
+  <h3>Offer History</h3>
+  {% for o in offers %}
+  <div class="panel" style="margin-bottom:.6rem;background:{% if o.is_mine %}#f1f8e9{% else %}#fff{% endif %};border-left:4px solid {% if o.made_by == 'buyer' %}var(--info){% else %}var(--forest){% endif %}">
+    <div class="flex between items-center wrap">
+      <div>
+        <strong>{{ o.made_by | title }}{% if o.is_mine %} (You){% endif %}</strong>
+        offered <strong>{{ o.offered_qty }} {{ o.unit }}</strong> at <strong>₹{{ o.offered_price | money }}/{{ o.unit }}</strong>
+        <span class="text-muted">= ₹{{ o.line_total | money }}</span>
+        <span class="status-pill status-{{ o.status }}" style="margin-left:.4rem">{{ o.status }}</span>
+      </div>
+      <small class="text-muted">{{ o.created_at | date:"%d %b %H:%M" }}</small>
+    </div>
+    {% if o.message %}<p class="text-muted" style="margin:.4rem 0 0">💬 {{ o.message }}</p>{% endif %}
+  </div>
+  {% empty %}
+  <p class="text-muted">No offers yet.</p>
+  {% endfor %}
+</div>
+
+{% if is_open %}
+  {% if latest.status == 'accepted' %}
+    <div class="panel" style="border-left:4px solid var(--success)">
+      <h3>✅ Offer Accepted</h3>
+      <p>Final terms: <strong>{{ latest.offered_qty }} {{ latest.unit }}</strong> at <strong>₹{{ latest.offered_price | money }}/{{ latest.unit }}</strong>.</p>
+      {% if role == 'buyer' %}
+      <form method="post" action="/orders/create-from-offer">
+        {% csrf %}
+        <input type="hidden" name="negotiation_id" value="{{ negotiation.id }}">
+        <div class="form-group" style="max-width:280px"><label>Fulfilment</label>
+          <select class="form-control" name="fulfilment_method"><option value="pickup">Pickup</option><option value="delivery">Delivery</option></select>
+        </div>
+        <button class="btn btn-primary btn-lg">Convert to Order →</button>
+      </form>
+      {% else %}
+      <p class="text-muted">Waiting for the buyer to convert this into an order.</p>
+      {% endif %}
+    </div>
+  {% elif can_respond %}
+    <div class="panel">
+      <h3>Respond to Offer</h3>
+      <p class="text-muted">The {{ latest.made_by }} offered {{ latest.offered_qty }} {{ latest.unit }} at ₹{{ latest.offered_price | money }}.</p>
+      <form method="post" action="/negotiations/{{ negotiation.id }}/respond">
+        {% csrf %}
+        <div class="flex gap-1 wrap mb-2">
+          <button class="btn btn-primary" name="action" value="accept">✓ Accept</button>
+          <button class="btn btn-danger" name="action" value="reject" data-confirm="Reject and close this negotiation?">✗ Reject</button>
+        </div>
+        <h4>Or make a counteroffer</h4>
+        <div class="form-row cols-2">
+          <div class="form-group"><label>Quantity ({{ latest.unit }})</label><input class="form-control" name="offered_qty" value="{{ latest.offered_qty }}"></div>
+          <div class="form-group"><label>Price (₹/{{ latest.unit }})</label><input class="form-control" name="offered_price" value="{{ latest.offered_price }}"></div>
+        </div>
+        <div class="form-group"><label>Message</label><textarea class="form-control" name="message"></textarea></div>
+        <button class="btn btn-accent" name="action" value="counter">Send Counteroffer</button>
+      </form>
+    </div>
+  {% else %}
+    <div class="panel"><p class="text-muted">⏳ Waiting for the other party to respond to the latest offer.</p></div>
+  {% endif %}
+{% else %}
+  <div class="panel"><p class="text-muted">This negotiation is closed.</p></div>
+{% endif %}
+{% endblock %}

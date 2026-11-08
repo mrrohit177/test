@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <a href="/products" class="text-muted">← Back to products</a>
+    <div class="grid" style="grid-template-columns:1fr;gap:2rem;margin-top:1rem">
+      <div class="grid" style="grid-template-columns:1fr;gap:2rem">
+        <div>
+          <div class="card-img" style="border-radius:var(--radius);border:1px solid var(--grey-200);max-height:380px">
+            {% if product.image_path %}<img src="{{ MEDIA_URL }}{{ product.image_path }}" alt="{{ product.name }}">
+            {% else %}<div class="placeholder">🌾</div>{% endif %}
+          </div>
+          {% if images %}
+          <div class="flex gap-1 mt-1 wrap">
+            {% for img in images %}<img src="{{ MEDIA_URL }}{{ img.path }}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--grey-200)" alt="">{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <div>
+          <div class="pill-row mb-2">
+            {% if product.is_verified %}<span class="badge badge-verified">✓ Verified Farmer</span>{% endif %}
+            {% if product.is_organic %}<span class="badge badge-organic">Organic</span>{% endif %}
+            <span class="badge badge-grey">{{ product.grade_label }}</span>
+            {% if product.listing_type == 'upcoming_harvest' %}<span class="badge badge-yellow">Upcoming Harvest</span>{% endif %}
+          </div>
+          <h1>{{ product.name }}</h1>
+          <div class="card-price" style="font-size:1.8rem">₹{{ product.price | money }} <small>/ {{ product.unit_label }}</small></div>
+          {% if product.price_negotiable %}<p class="text-muted">💬 Price is negotiable</p>{% endif %}
+
+          <div class="panel mt-2">
+            <div class="flex between"><span class="text-muted">Available</span><strong>{{ product.available_qty | default:"0" }} {{ product.unit_label }}</strong></div>
+            <hr class="divider" style="margin:.6rem 0">
+            <div class="flex between"><span class="text-muted">Minimum order</span><strong>{{ product.min_order_qty }} {{ product.unit_label }}</strong></div>
+            <hr class="divider" style="margin:.6rem 0">
+            <div class="flex between"><span class="text-muted">Sales channel</span><strong>{{ product.sales_channel | title }}</strong></div>
+            <hr class="divider" style="margin:.6rem 0">
+            <div class="flex between"><span class="text-muted">Location</span><strong>📍 {{ product.village | default:product.district }}, {{ product.district }}</strong></div>
+            {% if product.harvest_date %}<hr class="divider" style="margin:.6rem 0"><div class="flex between"><span class="text-muted">Harvest date</span><strong>{{ product.harvest_date | date }}</strong></div>{% endif %}
+            {% if product.expected_availability %}<hr class="divider" style="margin:.6rem 0"><div class="flex between"><span class="text-muted">Expected availability</span><strong>{{ product.expected_availability | date }}</strong></div>{% endif %}
+            <hr class="divider" style="margin:.6rem 0">
+            <div class="flex between"><span class="text-muted">Fulfilment</span><strong>{% if product.pickup_available %}Pickup{% endif %}{% if product.delivery_available %} · Delivery{% endif %}</strong></div>
+            <div class="text-muted mt-1" style="font-size:.8rem">Price/stock updated {{ product.price_updated_at | date }}</div>
+          </div>
+
+          {% if comparison %}
+          <div class="panel" style="border-left:4px solid var(--info)">
+            <strong>📊 Market Price Reference</strong>
+            <p class="text-muted" style="margin:.4rem 0">Reference mandi modal price at {{ comparison.market }}: ₹{{ comparison.modal_price | money }}/{{ product.unit_label }}
+            {% if comparison.direction == 'below' %}<br>This listing is ₹{{ comparison.abs_diff | money }} below the reference price.{% elif comparison.direction == 'above' %}<br>This listing is ₹{{ comparison.abs_diff | money }} above the reference price.{% else %}<br>This listing matches the reference price.{% endif %}
+            <br><small>Source: {{ comparison.source | default:"APMC" }} · {{ comparison.arrival_date | date }} · Informational only.</small></p>
+          </div>
+          {% endif %}
+
+          <!-- Buyer actions -->
+          {% if can_buy %}
+          <div class="panel">
+            <h3>Send Enquiry / Make an Offer</h3>
+            <form method="post" action="/enquiries/create">
+              {% csrf %}
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <div class="form-row cols-2">
+                <div class="form-group"><label>Quantity ({{ product.unit_label }})</label><input class="form-control" name="required_qty" value="{{ product.min_order_qty }}" required></div>
+                <div class="form-group"><label>Your Offer (₹/{{ product.unit_label }})</label><input class="form-control" name="proposed_price" value="{{ product.price }}" required></div>
+              </div>
+              <div class="form-group"><label>Delivery District</label><input class="form-control" name="delivery_district"></div>
+              <div class="form-group"><label>Message (optional)</label><textarea class="form-control" name="message" placeholder="e.g. Interested, can you deliver to Pune?"></textarea></div>
+              <button class="btn btn-primary btn-block" type="submit">Send Enquiry & Start Negotiation</button>
+            </form>
+            <form method="post" action="/buyer/wishlist" class="mt-1">
+              {% csrf %}
+              <input type="hidden" name="action" value="{% if in_wishlist %}remove{% else %}add{% endif %}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="hidden" name="next" value="/products/{{ product.id }}">
+              <button class="btn btn-outline btn-block" type="submit">{% if in_wishlist %}❤️ In Wishlist (remove){% else %}🤍 Add to Wishlist{% endif %}</button>
+            </form>
+          </div>
+          {% else %}
+          <div class="panel text-center">
+            <p>Log in as a buyer to enquire, negotiate or place an order.</p>
+            <a href="/login?next=/products/{{ product.id }}" class="btn btn-primary">Login</a>
+            <a href="/register/buyer" class="btn btn-outline">Register as Buyer</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if product.description %}
+      <div class="panel"><h3>Description</h3><p>{{ product.description }}</p>
+        {% if product.quality_notes %}<p class="text-muted"><strong>Quality:</strong> {{ product.quality_notes }}</p>{% endif %}
+        {% if product.packaging_info %}<p class="text-muted"><strong>Packaging:</strong> {{ product.packaging_info }}</p>{% endif %}
+      </div>
+      {% endif %}
+
+      <div class="panel">
+        <h3>About the Farmer</h3>
+        <div class="flex gap-2 items-center wrap">
+          <div style="width:56px;height:56px;border-radius:50%;background:var(--fresh-light);display:grid;place-items:center;font-size:1.5rem">👨‍🌾</div>
+          <div>
+            <strong>{{ product.farmer_name }}</strong> {% if product.is_verified %}<span class="badge badge-verified">✓</span>{% endif %}
+            <div class="text-muted">📍 {{ product.farmer_village | default:product.farmer_district }}, {{ product.farmer_district }} · ⭐ {{ product.farmer_rating }}</div>
+          </div>
+          <a href="/farmers/{{ product.farmer_id }}" class="btn btn-outline btn-sm" style="margin-left:auto">View Profile</a>
+        </div>
+      </div>
+
+      {% if other_products %}
+      <div>
+        <h3>More from this farmer</h3>
+        <div class="grid grid-products">
+          {% for product in other_products %}{% include "partials/product_card.html" %}{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

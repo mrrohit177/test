@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Product Categories</h1>
+    <p class="lead">Browse agricultural products by category.</p>
+    {% if categories %}
+    <div class="grid grid-cats mt-2">
+      {% for c in categories %}
+      <a class="cat-card" href="/products?category={{ c.slug }}">
+        <div class="emoji">{{ c.icon | default:"🌿" }}</div>
+        <span>{{ c.name_en }}</span>
+        <small class="text-muted">{{ c.count }} products</small>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="emoji">🌿</div><p>Categories will appear here.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

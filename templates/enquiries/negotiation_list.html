@@ -1,0 +1,26 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}Negotiations{% endblock %}
+{% block sidebar %}{% if role == 'farmer' %}{% include "dashboard/farmer_sidebar.html" %}{% else %}{% include "dashboard/buyer_sidebar.html" %}{% endif %}{% endblock %}
+{% block mobile_nav %}{% if role == 'farmer' %}{% include "dashboard/farmer_mobile_nav.html" %}{% else %}{% include "dashboard/buyer_mobile_nav.html" %}{% endif %}{% endblock %}
+{% block dash_content %}
+<h1>🤝 Price Negotiations</h1>
+{% if negotiations %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Product</th><th>{% if role == 'farmer' %}Buyer{% else %}Farmer{% endif %}</th><th>Offers</th><th>Latest</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for n in negotiations %}
+    <tr>
+      <td>{{ n.product_name }}</td>
+      <td>{% if role == 'farmer' %}{{ n.buyer_name }}{% else %}{{ n.farmer_name }}{% endif %}</td>
+      <td>{{ n.offer_count }}</td>
+      <td><span class="status-pill status-{{ n.last_status }}">{{ n.last_status | default:"—" }}</span></td>
+      <td>{% if n.is_open %}<span class="badge badge-green">Open</span>{% else %}<span class="badge badge-grey">Closed</span>{% endif %}</td>
+      <td><a href="/negotiations/{{ n.id }}" class="btn btn-sm btn-outline">Open</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% else %}
+<div class="empty-state"><div class="emoji">🤝</div><h3>No negotiations</h3><p>Negotiations start when a buyer sends an enquiry.</p></div>
+{% endif %}
+{% endblock %}

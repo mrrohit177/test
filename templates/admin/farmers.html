@@ -1,0 +1,30 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Manage Farmers{% endblock %}
+{% block dash_content %}
+<h1>👨‍🌾 Farmers</h1>
+{% if farmers %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Name</th><th>Mobile</th><th>District</th><th>Products</th><th>Verification</th><th>Set Verification</th></tr></thead>
+  <tbody>
+    {% for f in farmers %}
+    <tr>
+      <td>{{ f.display_name | default:f.full_name }}</td><td>{{ f.mobile }}</td><td>{{ f.district }}</td><td>{{ f.product_count }}</td>
+      <td><span class="badge {% if f.verification_level == 'farm_verified' or f.verification_level == 'identity_verified' %}badge-verified{% else %}badge-grey{% endif %}">{{ f.verification_level | replace_us | title }}</span></td>
+      <td>
+        <form method="post" action="/admin/farmers/{{ f.id }}/verify" class="flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <select class="form-control" style="width:160px" name="verification_level">
+            <option value="basic" {% if f.verification_level == 'basic' %}selected{% endif %}>Basic</option>
+            <option value="mobile_verified" {% if f.verification_level == 'mobile_verified' %}selected{% endif %}>Mobile Verified</option>
+            <option value="identity_verified" {% if f.verification_level == 'identity_verified' %}selected{% endif %}>Identity Verified</option>
+            <option value="farm_verified" {% if f.verification_level == 'farm_verified' %}selected{% endif %}>Farm Verified</option>
+          </select>
+          <button class="btn btn-sm btn-primary">Set</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">👨‍🌾</div><p>No farmers registered.</p></div>{% endif %}
+{% endblock %}

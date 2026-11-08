@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Market Prices{% endblock %}
+{% block content %}
+<section class="section"><div class="container">
+  <h1>📈 Market Price Tracker</h1>
+  <p class="lead">APMC mandi prices to help you benchmark listings. FarmConnect never fabricates live prices.</p>
+
+  {% if has_data %}
+    <form method="get" action="/market-prices" class="flex gap-1 wrap mb-2">
+      <select class="form-control" style="max-width:220px" name="commodity">
+        <option value="">All commodities</option>
+        {% for c in commodities %}<option value="{{ c }}" {% if commodity == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+      </select>
+      <select class="form-control" style="max-width:220px" name="district">
+        <option value="">All districts</option>
+        {% for d in districts %}<option value="{{ d }}" {% if district == d %}selected{% endif %}>{{ d }}</option>{% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Filter</button>
+    </form>
+
+    {% if last_updated %}<p class="text-muted">Data as of {{ last_updated | date }}. Prices are per quintal unless noted.</p>{% endif %}
+
+    {% if prices %}
+    <div class="table-wrap"><table class="data">
+      <thead><tr><th>Commodity</th><th>Variety</th><th>Market</th><th>District</th><th>Min</th><th>Max</th><th>Modal</th><th>Date</th><th>Source</th></tr></thead>
+      <tbody>
+        {% for p in prices %}
+        <tr>
+          <td>{{ p.commodity }}</td><td>{{ p.variety | default:"—" }}</td><td>{{ p.market }}</td><td>{{ p.district }}</td>
+          <td>₹{{ p.min_price | money }}</td><td>₹{{ p.max_price | money }}</td><td><strong>₹{{ p.modal_price | money }}</strong></td>
+          <td>{{ p.arrival_date | date }}</td><td>{{ p.source | default:"APMC" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty-state"><div class="emoji">📊</div><p>No prices match your filter.</p></div>
+    {% endif %}
+  {% else %}
+    <div class="empty-state">
+      <div class="emoji">📊</div>
+      <h3>Market data not connected yet</h3>
+      <p>A live APMC / AGMARKNET data source has not been configured for this installation,
+      and no historical data has been imported. We never invent live mandi prices.</p>
+      <p class="text-muted">To enable this feature, configure <code>DATA_GOV_IN_API_KEY</code> or import historical data,
+      {% if data_source_configured %}then run the price import.{% else %}then seed demo prices with <code>python3 manage.py seed</code>.{% endif %}</p>
+    </div>
+  {% endif %}
+</div></section>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "dashboard/base_dash.html" %}
+{% block title %}My Profile{% endblock %}
+{% block sidebar %}{% if user.role == 'farmer' %}{% include "dashboard/farmer_sidebar.html" %}{% else %}{% include "dashboard/buyer_sidebar.html" %}{% endif %}{% endblock %}
+{% block mobile_nav %}{% if user.role == 'farmer' %}{% include "dashboard/farmer_mobile_nav.html" %}{% else %}{% include "dashboard/buyer_mobile_nav.html" %}{% endif %}{% endblock %}
+{% block dash_content %}
+<h1>👤 My Profile</h1>
+<form method="post" action="/profile" enctype="multipart/form-data">
+  {% csrf %}
+  <div class="panel">
+    <div class="form-group"><label>Full Name</label><input class="form-control" name="full_name" value="{{ user.full_name }}"></div>
+    <div class="form-group"><label>Mobile</label><input class="form-control" value="{{ user.mobile }}" disabled><span class="hint">Mobile cannot be changed here.</span></div>
+    <div class="form-group"><label>Profile Photo</label><input class="form-control" type="file" name="avatar" accept="image/*"></div>
+  </div>
+
+  {% if user.role == 'farmer' %}
+  <div class="panel">
+    <h3>Farm Details</h3>
+    <div class="form-row cols-3">
+      <div class="form-group"><label>Village</label><input class="form-control" name="village" value="{{ profile.village | default:'' }}"></div>
+      <div class="form-group"><label>Taluka</label><input class="form-control" name="taluka" value="{{ profile.taluka | default:'' }}"></div>
+      <div class="form-group"><label>District</label><input class="form-control" name="district" value="{{ profile.district | default:'' }}"></div>
+    </div>
+    <div class="form-group"><label>Main Crops</label><input class="form-control" name="main_crops" value="{{ profile.main_crops | default:'' }}"></div>
+    <div class="form-group"><label>Bio</label><textarea class="form-control" name="bio">{{ profile.bio | default:'' }}</textarea></div>
+    <p class="text-muted">Verification: <span class="badge badge-grey">{{ profile.verification_level | replace_us | title }}</span></p>
+  </div>
+  {% else %}
+  <div class="panel">
+    <h3>Business Details</h3>
+    <div class="form-group"><label>Business Name</label><input class="form-control" name="business_name" value="{{ profile.business_name | default:'' }}"></div>
+    <div class="form-row cols-2">
+      <div class="form-group"><label>City</label><input class="form-control" name="city" value="{{ profile.city | default:'' }}"></div>
+      <div class="form-group"><label>District</label><input class="form-control" name="district" value="{{ profile.district | default:'' }}"></div>
+    </div>
+    <div class="form-group"><label>Business Address</label><textarea class="form-control" name="business_address">{{ profile.business_address | default:'' }}</textarea></div>
+  </div>
+  {% endif %}
+  <button class="btn btn-primary btn-lg" type="submit">Save Profile</button>
+</form>
+{% endblock %}

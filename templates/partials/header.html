@@ -1,0 +1,57 @@
+<header class="site-header">
+  <div class="container nav">
+    <a href="/" class="brand">
+      <span class="leaf">🌱</span> {{ SITE_NAME }}
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/">{% t "nav.home" %}</a></li>
+      <li><a href="/products">{% t "nav.browse" %}</a></li>
+      <li><a href="/categories">{% t "nav.categories" %}</a></li>
+      <li><a href="/farmers">{% t "nav.farmers" %}</a></li>
+      <li><a href="/market-prices">{% t "nav.market_prices" %}</a></li>
+      <li><a href="/about">{% t "nav.about" %}</a></li>
+      <li><a href="/contact">{% t "nav.contact" %}</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span class="lang-switch">
+        {% for code in languages %}
+          <form method="post" action="/set-language">
+            {% csrf %}
+            <input type="hidden" name="lang" value="{{ code }}">
+            <input type="hidden" name="next" value="/">
+            <button type="submit" class="{% if lang == code %}active{% endif %}">{{ code | upper }}</button>
+          </form>
+        {% endfor %}
+      </span>
+
+      {% if is_authenticated %}
+        <a href="/dashboard" class="btn btn-outline btn-sm">{% t "nav.dashboard" %}</a>
+        <a href="/logout" class="btn btn-ghost btn-sm">{% t "nav.logout" %}</a>
+      {% else %}
+        <a href="/login" class="btn btn-ghost btn-sm">{% t "nav.login" %}</a>
+        <a href="/register" class="btn btn-primary btn-sm">{% t "nav.register" %}</a>
+      {% endif %}
+
+      <button class="nav-toggle" data-nav-toggle aria-label="Menu">☰</button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="/">{% t "nav.home" %}</a>
+    <a href="/products">{% t "nav.browse" %}</a>
+    <a href="/categories">{% t "nav.categories" %}</a>
+    <a href="/farmers">{% t "nav.farmers" %}</a>
+    <a href="/market-prices">{% t "nav.market_prices" %}</a>
+    <a href="/about">{% t "nav.about" %}</a>
+    <a href="/contact">{% t "nav.contact" %}</a>
+    {% if is_authenticated %}
+      <a href="/dashboard">{% t "nav.dashboard" %}</a>
+      <a href="/logout">{% t "nav.logout" %}</a>
+    {% else %}
+      <a href="/login">{% t "nav.login" %}</a>
+      <a href="/register">{% t "nav.register" %}</a>
+    {% endif %}
+  </div>
+</header>

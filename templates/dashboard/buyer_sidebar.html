@@ -1,0 +1,16 @@
+<ul class="dash-nav">
+  <li><a href="/dashboard" class="{% if active_nav == 'dashboard' %}active{% endif %}">📊 Dashboard</a></li>
+  <li><a href="/products" class="{% if active_nav == 'browse' %}active{% endif %}">🛒 Browse Products</a></li>
+  <li><a href="/farmers" class="{% if active_nav == 'farmers' %}active{% endif %}">👨‍🌾 Find Farmers</a></li>
+  <li><a href="/buyer/enquiries" class="{% if active_nav == 'enquiries' %}active{% endif %}">📨 My Enquiries</a></li>
+  <li><a href="/buyer/negotiations" class="{% if active_nav == 'negotiations' %}active{% endif %}">🤝 Negotiations</a></li>
+  <li><a href="/buyer/orders" class="{% if active_nav == 'orders' %}active{% endif %}">🧾 My Orders</a></li>
+  <li><a href="/buyer/wishlist" class="{% if active_nav == 'wishlist' %}active{% endif %}">❤️ Wishlist</a></li>
+  <li><a href="/buyer/history" class="{% if active_nav == 'history' %}active{% endif %}">📜 Purchase History</a></li>
+  <li><a href="/market-prices" class="{% if active_nav == 'prices' %}active{% endif %}">📈 Market Prices</a></li>
+  <li><a href="/transport" class="{% if active_nav == 'transport' %}active{% endif %}">🚚 Transport</a></li>
+  <li><a href="/notifications" class="{% if active_nav == 'notifications' %}active{% endif %}">🔔 Notifications {% if unread %}<span class="notif-dot">{{ unread }}</span>{% endif %}</a></li>
+  <li><a href="/profile" class="{% if active_nav == 'profile' %}active{% endif %}">👤 My Profile</a></li>
+  <li><a href="/settings" class="{% if active_nav == 'settings' %}active{% endif %}">⚙️ Settings</a></li>
+  <li><a href="/logout">🚪 Logout</a></li>
+</ul>

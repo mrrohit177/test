@@ -1,0 +1,8 @@
+<a href="/dashboard" class="{% if active_nav == 'dashboard' %}active{% endif %}">Dashboard</a>
+<a href="/products" class="{% if active_nav == 'browse' %}active{% endif %}">Browse</a>
+<a href="/buyer/enquiries" class="{% if active_nav == 'enquiries' %}active{% endif %}">Enquiries</a>
+<a href="/buyer/negotiations" class="{% if active_nav == 'negotiations' %}active{% endif %}">Negotiate</a>
+<a href="/buyer/orders" class="{% if active_nav == 'orders' %}active{% endif %}">Orders</a>
+<a href="/buyer/wishlist" class="{% if active_nav == 'wishlist' %}active{% endif %}">Wishlist</a>
+<a href="/buyer/history" class="{% if active_nav == 'history' %}active{% endif %}">History</a>
+<a href="/notifications">🔔 {% if unread %}{{ unread }}{% endif %}</a>

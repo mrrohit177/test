@@ -1,0 +1,43 @@
+/* ==========================================================================
+   FarmConnect — dashboard layout
+   ========================================================================== */
+.dash { display: grid; grid-template-columns: 1fr; gap: 0; min-height: calc(100vh - 64px); }
+.dash-sidebar {
+  background: var(--forest-dark); color: #dfe8df; padding: 1rem 0;
+  display: none; flex-direction: column;
+}
+.dash-sidebar .side-user { padding: .5rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,.12); margin-bottom: .5rem; }
+.dash-sidebar .side-user .name { color: #fff; font-weight: 700; }
+.dash-sidebar .side-user .role { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); }
+.dash-nav { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dash-nav a { color: #cfe0cf; padding: .7rem 1.25rem; font-size: .92rem; font-weight: 500; display: flex; align-items: center; gap: .6rem; border-left: 3px solid transparent; }
+.dash-nav a:hover { background: rgba(255,255,255,.08); color: #fff; text-decoration: none; }
+.dash-nav a.active { background: rgba(255,255,255,.12); color: #fff; border-left-color: var(--accent); }
+.dash-main { padding: 1.5rem 1rem; background: var(--grey-50); }
+.dash-main h1 { font-size: 1.6rem; }
+
+/* mobile dashboard nav as horizontal scroll */
+.dash-mobile-nav { display: flex; overflow-x: auto; gap: .4rem; padding: .6rem 1rem; background: var(--forest-dark); -webkit-overflow-scrolling: touch; }
+.dash-mobile-nav a { color: #cfe0cf; white-space: nowrap; padding: .4rem .8rem; border-radius: 999px; font-size: .85rem; background: rgba(255,255,255,.08); }
+.dash-mobile-nav a.active { background: var(--accent); color: #3a2c00; font-weight: 700; }
+
+@media (min-width: 900px) {
+  .dash { grid-template-columns: 250px 1fr; }
+  .dash-sidebar { display: flex; }
+  .dash-mobile-nav { display: none; }
+  .dash-main { padding: 2rem; }
+}
+
+.panel { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); padding: 1.25rem 1.4rem; box-shadow: var(--shadow); margin-bottom: 1.25rem; }
+.panel h2, .panel h3 { margin-top: 0; }
+.panel-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+
+.status-pill { padding: .25rem .6rem; border-radius: 999px; font-size: .75rem; font-weight: 700; text-transform: capitalize; }
+.status-pending { background: #fff8e1; color: var(--accent-dark); }
+.status-accepted, .status-confirmed { background: #e3f2fd; color: var(--info); }
+.status-completed, .status-delivered { background: #e8f5e9; color: var(--success); }
+.status-rejected, .status-cancelled, .status-disputed { background: #ffebee; color: var(--danger); }
+.status-dispatched, .status-ready_for_pickup, .status-negotiation { background: #ede7f6; color: #5e35b1; }
+.status-open, .status-draft { background: var(--grey-100); color: var(--muted); }
+
+.notif-dot { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; background: var(--danger); color: #fff; border-radius: 999px; font-size: .7rem; font-weight: 700; }

@@ -1,0 +1,31 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Complaints{% endblock %}
+{% block dash_content %}
+<h1>⚠️ Complaints</h1>
+{% if complaints %}
+<div class="table-wrap"><table class="data">
+  <thead><tr><th>Subject</th><th>Raised By</th><th>Description</th><th>Status</th><th>Update</th></tr></thead>
+  <tbody>
+    {% for c in complaints %}
+    <tr>
+      <td>{{ c.subject }}</td><td>{{ c.raised_by_name }}</td><td>{{ c.description | truncate:60 }}</td>
+      <td><span class="status-pill status-{{ c.status }}">{{ c.status }}</span></td>
+      <td>
+        <form method="post" action="/admin/complaints" class="flex gap-1">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" name="complaint_id" value="{{ c.id }}">
+          <select class="form-control" style="width:150px" name="status">
+            <option value="open" {% if c.status == 'open' %}selected{% endif %}>Open</option>
+            <option value="investigating" {% if c.status == 'investigating' %}selected{% endif %}>Investigating</option>
+            <option value="resolved" {% if c.status == 'resolved' %}selected{% endif %}>Resolved</option>
+            <option value="dismissed" {% if c.status == 'dismissed' %}selected{% endif %}>Dismissed</option>
+          </select>
+          <button class="btn btn-sm btn-primary">Save</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table></div>
+{% else %}<div class="empty-state"><div class="emoji">✅</div><h3>No complaints</h3><p>All clear.</p></div>{% endif %}
+{% endblock %}

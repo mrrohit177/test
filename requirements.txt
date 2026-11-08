@@ -1,0 +1,10 @@
+# FarmConnect has NO third-party Python dependencies.
+# It runs on the Python 3 standard library only (see README for why).
+#
+# Everything used (sqlite3, wsgiref, hashlib, hmac, secrets, http.cookies,
+# email, csv, json) ships with CPython 3.10+.
+#
+# Requires: Python >= 3.10
+#
+# For production you may OPTIONALLY add a WSGI server, e.g.:
+#   gunicorn>=21.0    # then: gunicorn core.wsgi:application
